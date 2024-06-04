@@ -60,7 +60,7 @@ class Interpreter implements Expr.Visitor<Object>,
         throw new RuntimeError(operator, "Operands must be numbers.");
     }
 
-    private Object evaluate(Expr expr) {
+    public Object evaluate(Expr expr) {
         return expr.accept(this);
     }
 

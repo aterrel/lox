@@ -12,6 +12,7 @@ public class Lox {
     private static final Interpreter interpreter = new Interpreter();
     static boolean hadError = false;
     static boolean hadRuntimeError = false;
+    static boolean inREPL = false;
 
     public static void main(String[] args) throws IOException {
         if (args.length > 1) {
@@ -34,6 +35,7 @@ public class Lox {
     }
 
     private static void runPrompt() throws IOException {
+        inREPL = true;
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
 
@@ -52,10 +54,16 @@ public class Lox {
         Parser parser = new Parser(tokens);
         List<Stmt> statements = parser.parse();
 
+
         // Stop if there was a syntax error
         if(hadError) return;
 
-        interpreter.interpret(statements);
+        if (inREPL && statements.size() == 1 && statements.get(0) instanceof Stmt.Expression) {
+            Stmt.Expression stmtExpr = (Stmt.Expression)statements.get(0);
+            System.out.println(interpreter.evaluate(stmtExpr.expression));
+        } else {
+            interpreter.interpret(statements);
+        }
 
         //System.out.println(new AstPrinter().print(expression));
 
