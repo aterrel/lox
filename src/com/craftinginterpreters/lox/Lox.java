@@ -58,6 +58,12 @@ public class Lox {
         // Stop if there was a syntax error
         if(hadError) return;
 
+        Resolver resolver = new Resolver(interpreter);
+        resolver.resolve(statements);
+
+        // Stop if there was a resolution error
+        if (hadError) return;
+
         if (inREPL && statements.size() == 1 && statements.get(0) instanceof Stmt.Expression) {
             Stmt.Expression stmtExpr = (Stmt.Expression)statements.get(0);
             System.out.println(interpreter.evaluate(stmtExpr.expression));
