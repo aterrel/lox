@@ -19,7 +19,8 @@ SOURCES = $(wildcard $(LOXDIR)/*.java)
 CLASSES = $(SOURCES:$(SRCDIR)/%.java=$(OUTDIR)/%.class)
 MAINCLASS = com.craftinginterpreters.lox.Lox
 JLOX_EXE = jlox
-
+JLOX_JAR = $(JLOX_EXE).jar
+JLOX_DEBUG_EXE = jlox-debug
 
 # Main ASTPrint
 ASTPRINT_SOURCES = $(wildcard $(LOXDIR)/*.java)
@@ -41,14 +42,22 @@ all: jlox ast $(OUTDIR)/ast_print
 $(OUTDIR)/%.class: $(SRCDIR)/%.java
 	$(JAVAC) $(JFLAGS) -d $(OUTDIR) -cp $(CLASSPATH) $<
 
-# Rule to create jlox executable
-$(OUTDIR)/$(JLOX_EXE): $(CLASSES)
+$(OUTDIR)/$(JLOX_JAR):$(CLASSES)
 	echo "Main-Class: $(MAINCLASS)" > $(OUTDIR)/manifest.txt
-	jar cvfm $(OUTDIR)/$(JLOX_EXE).jar $(OUTDIR)/manifest.txt -C $(OUTDIR) .
+	jar cvfm $(OUTDIR)/$(JLOX_JAR) $(OUTDIR)/manifest.txt -C $(OUTDIR) .
 	rm $(OUTDIR)/manifest.txt
+
+# Rule to create jlox executable
+$(OUTDIR)/$(JLOX_EXE): $(OUTDIR)/$(JLOX_JAR)
 	echo "#!/bin/bash" > $(OUTDIR)/$(JLOX_EXE)
 	echo "java -cp .:$(OUTDIR) $(MAINCLASS) \$${@}" >> $(OUTDIR)/$(JLOX_EXE)
 	chmod +x $(OUTDIR)/$(JLOX_EXE)
+
+# Rule to create jlox executable
+$(OUTDIR)/$(JLOX_DEBUG_EXE): $(OUTDIR)/$(JLOX_JAR)
+	echo "#!/bin/bash" > $(OUTDIR)/$(JLOX_EXE)
+	echo "jdb -classpath .:$(OUTDIR) $(MAINCLASS) \$${@}" >> $(OUTDIR)/$(JLOX_DEBUG_EXE)
+	chmod +x $(OUTDIR)/$(JLOX_DEBUG_EXE)
 
 # Rule to create generate_ast executable
 $(OUTDIR)/$(AST_EXE): $(AST_CLASSES)
@@ -68,6 +77,8 @@ $(OUTDIR)/$(ASTPRINT_EXE): $(ASTPRINT_CLASSES)
 	chmod +x $(OUTDIR)/$(ASTPRINT_EXE)
 
 jlox: $(OUTDIR)/$(JLOX_EXE)
+
+jlox-debug: $(OUTDIR)/$(JLOX_DEBUG_EXE)
 
 # Generate the ast
 ast: $(OUTDIR)/generate_ast
