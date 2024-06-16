@@ -2,19 +2,35 @@ package com.craftinginterpreters.lox;
 
 
 class AstPrinter implements Expr.Visitor<String> {
+
     String print(Expr expr) {
         return expr.accept(this);
     }
 
     @Override
     public String visitAssignExpr(Expr.Assign expr) {
-        return "<Not Implemented>";
+        return parenthesize("Assign " + expr.name, expr.value);
+    }
+
+    @Override
+    public String visitCallExpr(Expr.Call expr) {
+        Expr[] paren_args = new Expr[expr.arguments.size() + 1];
+        paren_args[0] = expr.callee;
+        for (int i=1; i < expr.arguments.size(); i++) {
+            paren_args[i] = expr.arguments.get(i-1);
+        }
+        return parenthesize("Call", paren_args);
     }
 
     @Override
     public String visitBinaryExpr(Expr.Binary expr) {
         return parenthesize(expr.operator.lexeme,
                             expr.left, expr.right);
+    }
+
+    @Override
+    public String visitGetExpr(Expr.Get expr) {
+        return parenthesize(expr.name.lexeme, expr.object);
     }
 
     @Override
@@ -29,13 +45,30 @@ class AstPrinter implements Expr.Visitor<String> {
     }
 
     @Override
+    public String visitLogicalExpr(Expr.Logical expr) {
+        return parenthesize(expr.operator.lexeme,
+                            expr.left, expr.right);
+    }
+
+    @Override
+    public String visitSetExpr(Expr.Set expr) {
+        return parenthesize("Set " + expr.name.lexeme, 
+            expr.object, expr.value);
+    }
+
+    @Override
+    public String visitThisExpr(Expr.This expr) {
+        return expr.keyword.lexeme;
+    }
+
+    @Override
     public String visitUnaryExpr(Expr.Unary expr) {
         return parenthesize(expr.operator.lexeme, expr.right);
     }
 
     @Override
     public String visitVariableExpr(Expr.Variable expr) {
-        return "<Not Implemented>";
+        return "(Var " + expr.name + ")";
     }
 
 

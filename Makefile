@@ -56,7 +56,7 @@ $(OUTDIR)/$(JLOX_EXE): $(OUTDIR)/$(JLOX_JAR)
 # Rule to create jlox executable
 $(OUTDIR)/$(JLOX_DEBUG_EXE): $(OUTDIR)/$(JLOX_JAR)
 	echo "#!/bin/bash" > $(OUTDIR)/$(JLOX_EXE)
-	echo "jdb -classpath .:$(OUTDIR) $(MAINCLASS) \$${@}" >> $(OUTDIR)/$(JLOX_DEBUG_EXE)
+	echo "jdb -sourcepath src -classpath .:$(OUTDIR) $(MAINCLASS) \$${@}" >> $(OUTDIR)/$(JLOX_DEBUG_EXE)
 	chmod +x $(OUTDIR)/$(JLOX_DEBUG_EXE)
 
 # Rule to create generate_ast executable
@@ -88,4 +88,4 @@ ast: $(OUTDIR)/generate_ast
 clean:
 	rm -rf $(OUTDIR)
 
-.PHONY: all clean ast jlox
+.PHONY: all clean ast jlox jlox-debug
