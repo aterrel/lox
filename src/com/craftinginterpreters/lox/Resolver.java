@@ -19,6 +19,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     private enum FunctionType {
         NONE,
         FUNCTION,
+        INITIALIZER,
         METHOD
     }
 
@@ -50,16 +51,36 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
         declare(stmt.name);
         define(stmt.name);
+        
+        if (stmt.superclass != null &&
+                stmt.name.lexeme.equals(stmt.superclass.name.lexeme)){
+            Lox.error(stmt.superclass.name,
+                "A class can't inherit from iteslf.");
+        }
+
+        if (stmt.superclass != null) {
+            resolve(stmt.superclass);
+        }
+
+        if (stmt.superclass != null) {
+            beginScope();
+            scopes.peek().put("super", true);
+        }
 
         beginScope();
         scopes.peek().put("this", true);
 
         for (Stmt.Function method : stmt.methods) {
             FunctionType declaration = FunctionType.METHOD;
+            if (method.name.lexeme.equals("init")) {
+                declaration = FunctionType.INITIALIZER;
+            }
             resolveFunction(method, declaration);
         }
 
         endScope();
+
+        if(stmt.superclass != null) endScope();
 
         currentClass = enclosingClass;
         return null;
@@ -101,6 +122,10 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         }
 
         if (stmt.value != null) {
+            if (currentFunction == FunctionType.INITIALIZER) {
+                Lox.error(stmt.keyword,
+                    "Can't return a value from an initializer.");
+            }
             resolve(stmt.value);
         }
 
@@ -177,6 +202,12 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     public Void visitSetExpr(Expr.Set expr) {
         resolve(expr.value);
         resolve(expr.object);
+        return null;
+    }
+
+    @Override
+    public Void visitSuperExpr(Expr.Super expr) {
+        resolveLocal(expr, expr.keyword);
         return null;
     }
 
