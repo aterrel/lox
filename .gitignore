@@ -1,4 +1,5 @@
 jlox/out/*
+clox/out/*
 
 *.jar
 *.class
