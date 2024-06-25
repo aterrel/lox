@@ -4,3 +4,4 @@ clox/out/*
 *.jar
 *.class
 .vscode
+.idea
