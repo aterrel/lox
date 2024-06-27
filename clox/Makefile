@@ -2,7 +2,7 @@
 CC = clang
 
 # Compiler flags
-CFLAGS = -Wall -Wextra -std=c11 -g
+CFLAGS = -Wall -Wextra -std=c11 -g 
 
 # Source directory
 SRCDIR = src
@@ -21,6 +21,9 @@ OBJS = $(patsubst $(SRCDIR)/%.c, $(OUTDIR)/%.o, $(SRCS))
 
 # Default target
 all: $(OUTDIR)/$(TARGET)
+
+out:
+	mkdir -p out
 
 # Linking
 $(OUTDIR)/$(TARGET): $(OBJS) | $(OUTDIR)
