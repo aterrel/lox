@@ -64,6 +64,7 @@ int main(int argc, const char *argv[]) {
   initVM();
 
   if (argc == 1) {
+    // runFile("/Users/aterrel/Dev/aterrel/lox/examples/hello.lox");
     repl();
   } else if (argc == 2) {
     runFile(argv[1]);
