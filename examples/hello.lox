@@ -1,7 +1,13 @@
 fun sayHi(first, last) {
     print "Hi, " + first + " " + last + "!";
 }
+
+fun returnHello(first, last) {
+    return "Hi, " + first + " " + last + "!";
+}
+
 var first = "Steve";
 var last = "Miner";
 sayHi("Dear", "Reader");
 
+print returnHello(first, last);
