@@ -13,6 +13,8 @@
 VM vm;
 
 static Value clockNative(int argCount, Value *args) {
+  UNUSED(argCount);
+  UNUSED(args);
   return NUMBER_VAL((double)clock() / CLOCKS_PER_SEC);
 }
 
