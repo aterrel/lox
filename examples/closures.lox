@@ -6,7 +6,6 @@ fun outer() {
     print x;
   }
   inner();
-  foo();
 }
 
 outer();
