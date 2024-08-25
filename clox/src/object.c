@@ -106,6 +106,9 @@ static void printFunction(ObjFunction *function) {
   if (function->name == NULL) {
     printf("<script>");
     return;
+  } else if (function->name->length == 0) {
+    printf("<closure>");
+    return;
   }
   printf("<fn %s>", function->name->chars);
 }
