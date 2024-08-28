@@ -12,7 +12,7 @@ class Bacon {
     }
 }
 
-Bacon().eat(); // Prints "Crunch crunch crunch"
+//Bacon().eat(); // Prints "Crunch crunch crunch"
 
 
 class Person {
@@ -58,7 +58,7 @@ class Doughnut {
 
 class BostonCream < Doughnut {
   cook() {
-    super.cook();
+    //super.cook();
     print "Pipe full of custard and coat with chocolate.";
   }
 }
